@@ -22,7 +22,7 @@ def index():
 def login():
     if request.method == "GET":
         return render_template("login.html")
-    
+
     username = request.form["username"]
     password = request.form["password"]
 
@@ -34,10 +34,9 @@ def login():
     db.close()
 
     if user is None or user["password"] != password:
-        return jsonify({"error": "Invalid username or password"}), 401
+        return render_template("login.html", error="Invalid username or password")
     
     session["user_id"] = user["user_id"]
-    print("Good Job")
     
     return redirect(url_for("dashboard"))
 
