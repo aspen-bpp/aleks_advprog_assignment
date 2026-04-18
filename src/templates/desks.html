@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Desks</title>
+</head>
+<body>
+    <h2>Desks</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Floor</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for desk in desks %}
+            <tr>
+                <td>{{ desk.desk_id }}</td>
+                <td>{{ desk.name }}</td>
+                <td>{{ desk.location }}</td>
+                <td>{{ desk.floor }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

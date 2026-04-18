@@ -1,58 +1,104 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect, url_for, render_template, session
 from pathlib import Path
+from libs import Lib
 import sqlite3
 import yaml
 import os
-
-def get_db_connection():
-    conn = sqlite3.connect('desks.db')
-    conn.row_factory = sqlite3.Row
-
-    return conn
-
-def init_db():
-    db = get_db_connection()
-    with db:
-        db.execute(
-            """
-            CREATE TABLE IF NOT EXISTS desks(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            location TEXT NOT NULL)
-            """
-        )
+import datetime
 
 app = Flask(__name__)
-init_db()
-def init_desks():
-    path = Path(os.getcwd() + "/Data/desks.yaml")
-    with open(path) as f:
-        return yaml.full_load(f)
+Lib.init_db()
+Lib.init_all_data()
+app.secret_key= "dev-secret"
+
+@app.route("/")
+def index():
+    '''
+    After initialisation the user is redirected to the login page
+    '''
+    return redirect(url_for("login"))
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login.html")
+    
+    username = request.form["username"]
+    password = request.form["password"]
+
+    db = Lib.get_db_connection()
+    user = db.execute(
+        "SELECT * FROM Users WHERE username = ?",
+        (username,)
+    ).fetchone()
+    db.close()
+
+    if user is None or user["password"] != password:
+        return jsonify({"error": "Invalid username or password"}), 401
+    
+    session["user_id"] = user["user_id"]
+    print("Good Job")
+    
+    return redirect(url_for("dashboard"))
+
+@app.route("/dashboard")
+def dashboard():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    
+    return render_template("dashboard.html")
+
+@app.route("/desks", methods=["GET"])
+def show_desks():
+    db = Lib.get_db_connection()
+    rows = db.execute(
+        "SELECT * FROM Desks"
+    ).fetchall()
+    db.close()
+
+    desks = [dict(row) for row in rows]
 
 
-desks = init_desks()
+    return render_template("desks.html", desks=desks)
 
-@app.route('/desks', methods=["GET"])
-def get_desks():
-    return jsonify(desks)
+@app.route("/bookings")
+def show_bookings():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    
+    db = Lib.get_db_connection()
+    rows = db.execute(
+        "SELECT * FROM Bookings WHERE user_id = ?",
+        (session["user_id"],)
+    ).fetchall()
+    db.close()
 
-@app.route('/books', methods=["POST"])
-def add_desk():
-    desk_data = request.get_json()
-    db = get_db_connection()
-    db.execute('INSERT INTO DESKS (name, location) VALUES (?, ?)', (desk_data['name'], desk_data['location']))
-    db.execute
-    new_desk_id = db.execute('SELECT last_insert_rowid()').fetchone()[0]
-    db.close
+    bookings = [dict(row) for row in rows]
 
-    return jsonify({"id": new_desk_id, **desk_data}), 201
 
-@app.route('/desks/<int:desk_id>', methods=['GET'])
-def get_desk(desk_id):
-    for desk in desks:
-        if desk['id'] == desk_id:
-            return jsonify(desk)
+    return render_template("bookings.html", bookings=bookings)
 
-    return jsonify({'error':"Book not found"}), 404 
+@app.route("/make_booking", methods=["POST", "GET"])
+def make_booking():
+    if request.method == "GET":
+        return render_template("make_booking.html")
 
-app.run(debug=True)
+    values = [session["user_id"],
+              request.form["desk_id"],
+              request.form["start_date"],
+              request.form["end_date"],
+              True,
+              (datetime.datetime.now()).strftime("%x")
+              ]
+
+    db = Lib.get_db_connection()
+    with db:
+        db.execute(
+            f"INSERT INTO Bookings (user_id, desk_id, start_date, end_date, active, created) VALUES ( ?, ?, ?, ?, ?, ?)",
+            values
+        )
+    db.close()
+
+    return redirect(url_for("show_bookings"))
+if __name__ == "__main__":
+    app.run(debug=True)

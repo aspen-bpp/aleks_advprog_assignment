@@ -1,8 +1,6 @@
-- id: 0
-  name: "F1D0"
+- name: "F1D0"
   location: "Manchester"
   floor: 3
-- id: 1
-  name: "F1D1"
+- name: "F1D1"
   location: "Manchester"
   floor: 3
