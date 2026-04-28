@@ -1,13 +1,13 @@
 <head>
     <title>
-        Make a Booking
+        Delete a Booking
     </title>
 </head>
 <body>
-    <h2>Make a Booking</h2>
+    <h2>Delete a Booking</h2>
     <form method="POST">
-        <label>Desk name:</label><br>
-        <input type="text" name="desk_name" required><br><br>
+        <label>Desk:</label><br>
+        <input type="text" name="desk" required><br><br>
 
         <label>Start Date:</label><br>
         <input type="date" name="start_date" required><br><br>
@@ -15,7 +15,7 @@
         <label>End Date:</label><br>
         <input type="date" name="end_date" required><br><br>
 
-        <button type="submit">Make Booking</button>
+        <button type="submit">Delete Booking</button>
     </form>
     {% if error %}
         <p style="color:red;"> {{ error }}</p>

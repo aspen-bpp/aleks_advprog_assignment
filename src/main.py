@@ -133,7 +133,7 @@ def make_booking():
         return render_template("make_booking.html")
 
     values = [session["user_id"],
-              request.form["desk_id"],
+              Lib.get_desk_id(request.form["desk_name"]),
               request.form["start_date"],
               request.form["end_date"],
               True,
@@ -150,7 +150,26 @@ def make_booking():
 
     return redirect(url_for("show_bookings"))
 
-@app.route("/del_booking")
+@app.route("/del_booking", methods=["POST", "GET"])
+def del_booking():
+    if request.method == "GET":
+        return render_template("del_booking.html")
+
+    db = Lib.get_db_connection()
+    values = [
+        session["user_id"],
+        Lib.get_desk_id(request.form["desk"]),
+        request.form["start_date"],
+        request.form["end_date"]
+    ]
+    with db:
+        db.execute(
+            "DELETE FROM Bookings WHERE user_id = ? AND desk_id = ? AND start_date = ? AND end_date = ?",
+            values
+            )
+    db.close()
+
+    return redirect(url_for("show_bookings"))
 
 @app.route("/add_user", methods=["POST", "GET"])
 def add_user():

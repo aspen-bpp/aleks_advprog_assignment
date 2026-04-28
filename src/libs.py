@@ -100,3 +100,17 @@ class Lib():
                 ["name", "location", "floor"]
             )
         db.close()
+    
+    @classmethod
+    def get_desk_id(self, desk_name):
+        db = self.get_db_connection()
+        with db:
+            booking = db.execute(
+                "SELECT desk_id FROM Desks WHERE name = ?",
+                (desk_name,)
+            ).fetchone()
+        db.close()
+        if booking is None:
+            return None
+        
+        return booking["desk_id"]
