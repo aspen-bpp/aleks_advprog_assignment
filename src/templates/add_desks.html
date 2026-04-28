@@ -1,0 +1,24 @@
+
+<head>
+    <title>
+        Add a Desk
+    </title>
+</head>
+<body>
+    <h2>Add a Desk</h2>
+    <form method="POST">
+        <label>name:</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>location:</label><br>
+        <input type="text" name="location" required><br><br>
+
+        <label>Floor:</label><br>
+        <input type="number" name="floor" required><br><br>
+
+        <button type="submit">Add Desk</button>
+    </form>
+    {% if error %}
+        <p style="color:red;"> {{ error }}</p>
+    {% endif %}
+</body>

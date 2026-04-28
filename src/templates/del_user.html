@@ -1,0 +1,17 @@
+<head>
+    <title>
+        Delete a User
+    </title>
+</head>
+<body>
+    <h2>Delete a User</h2>
+    <form method="POST">
+        <label>Username:</label><br>
+        <input type="text" name="username" required><br><br>
+
+        <button type="submit">Delete User</button>
+    </form>
+    {% if error %}
+        <p style="color:red;"> {{ error }}</p>
+    {% endif %}
+</body>

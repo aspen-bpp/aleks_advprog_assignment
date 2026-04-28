@@ -1,6 +1,5 @@
-- user_id: U0
-  username: alespe01
-  password: HelloWorld2
-  f_name: Aleks
-  s_name: Spencer
-  email: aleks.spencer@company.com
+- username: Admin
+  password: AdminPowers12
+  f_name: Admin
+  s_name: Account
+  email: Admin.Admin@adminmail.com

@@ -1,0 +1,30 @@
+
+<head>
+    <title>
+        Add a User
+    </title>
+</head>
+<body>
+    <h2>Add a User</h2>
+    <form method="POST">
+        <label>Username:</label><br>
+        <input type="text" name="username" required><br><br>
+
+        <label>password:</label><br>
+        <input type="text" name="password" required><br><br>
+
+        <label>First name:</label><br>
+        <input type="text" name="f_name" required><br><br>
+
+        <label>Last name:</label><br>
+        <input type="text" name="s_name" required><br><br>
+
+        <label>email Address:</label><br>
+        <input type="text" name="email" required><br><br>
+
+        <button type="submit">Add User</button>
+    </form>
+    {% if error %}
+        <p style="color:red;"> {{ error }}</p>
+    {% endif %}
+</body>
