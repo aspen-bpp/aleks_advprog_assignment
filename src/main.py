@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, redirect, url_for, render_template, session
 from pathlib import Path
 from libs import Lib
+import validators
 import sqlite3
 import yaml
 import os
@@ -77,6 +78,10 @@ def show_desks():
 def add_desks():
     if request.method == "GET":
         return render_template("add_desks.html")
+    
+    errors = validators.validate_desk_data(request.form["name"], request.form["location"], request.form["floor"])
+    if errors:
+        return render_template("add_desks.html", error=errors)
 
     db = Lib.get_db_connection()
     with db:
@@ -138,6 +143,9 @@ def make_booking():
               request.form["end_date"],
               (datetime.datetime.now()).strftime("%x")
               ]
+    errors = validators.validate_booking_data(request.form["desk_name"], request.form["start_date"], request.form["end_date"])
+    if errors:
+        return render_template("make_booking.html", error=errors)
 
     db = Lib.get_db_connection()
     with db:
@@ -182,6 +190,10 @@ def add_user():
         request.form["s_name"],
         request.form["email"]
     ]
+
+    errors = validators.validate_users_data(request.form["username"], request.form["password"], request.form["f_name"], request.form["s_name"], request.form["email"])
+    if errors:
+        return render_template("add_user.html", error=errors)
 
     db = Lib.get_db_connection()
     with db:

@@ -1,0 +1,151 @@
+from libs import Lib
+from datetime import datetime
+
+def validate_desk_data(name, location, floor):
+    '''
+    Validating user input for adding to the desk table
+    '''
+    errors = []
+    # Name valiation
+    if not is_required(name):
+        errors.append("Desk name is required")
+
+    # location validation
+    if not is_required(location):
+        errors.append("Desk location is required")
+    
+    if not is_valid_location(location):
+        errors.append(f"{location} is not a valid location")
+
+    # floor validation
+    if not is_required(floor):
+        errors.append("Desk floor is required")
+
+
+    if errors:
+        return errors
+    
+
+def validate_users_data(username, password, f_name, s_name, email):
+    '''
+    Validating user input for adding to the user table
+    '''
+    errors = []
+
+    # Username validation
+    if not is_required(username):
+        errors.append("Username is required")
+
+    # Password validation
+    if not is_required(password):
+        errors.append("Password is required")
+
+    # first name validation
+    if not is_required(f_name):
+        errors.append("First name is required")
+
+    # surname validation
+    if not is_required(s_name):
+        errors.append("Last name is required")
+
+    # email validation
+    if not is_required(email):
+        errors.append("Email is required")
+
+    if not is_valid_email(email):
+        errors.append("Email must contain @ symbol")
+
+    if errors:
+        return errors
+
+def validate_booking_data(desk, start_date, end_date):
+    '''
+    Validating user input for adding a booking 
+    '''
+    errors = []
+
+    # Desk validation
+    if not is_required(desk):
+        errors.append("Desk name is required")
+
+    if not desk_exists(desk):
+        errors.append(f"Desk {desk} does not exist")
+
+    # start_date validation
+    if not is_required(start_date):
+        errors.append("Booking start date is required")
+    
+    if not is_valid_date(start_date):
+        errors.append(f"{start_date} is not a valid date")
+
+    # end_date validation
+    if not is_required(end_date):
+        errors.append("Booking end date is required")
+
+    if not is_valid_date(end_date):
+        errors.append(f"{end_date} is not a valid date")
+
+
+    # Is desk already booked on those days
+    if not is_desk_booked(desk, start_date, end_date):
+        errors.append(f"Desk {desk} is already booked in that period")
+
+    if errors:
+        return errors
+
+def is_desk_booked(desk, start_date, end_date):
+    '''
+    Validating if a desk has already been booked
+    '''
+
+    desk_id = Lib.get_desk_id(desk)
+
+    db = Lib.get_db_connection()
+
+    desk = db.execute(
+        """
+        SELECT * FROM Bookings WHERE desk_id = ? 
+        AND start_date <= ?
+        AND end_date >= ?
+
+        """,
+        (desk_id, end_date, start_date,)
+    ).fetchone()
+    db.close()
+
+    if desk is not None:
+        return False
+    else:
+        return True
+
+def desk_exists(desk):
+    desk_id = Lib.get_desk_id(desk)
+
+    if desk_id is None:
+        return False
+    else:
+        return True
+
+def is_required(value):
+    return value is not None and value.strip() != ""
+
+def is_positive_int(value):
+    return value.isdigit() and int(value) > 0
+
+def is_valid_email(value):
+    return isinstance(value, str) and '@' in value
+
+def is_valid_location(value):
+    locations = ['Manchester', 'Cambridge', 'Sheffield', 'Bristol']
+
+    if value in locations:
+        return True
+    else:
+        return False
+    
+def is_valid_date(value):
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+        return True
+    except ValueError:
+        return False
