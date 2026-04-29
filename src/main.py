@@ -136,14 +136,13 @@ def make_booking():
               Lib.get_desk_id(request.form["desk_name"]),
               request.form["start_date"],
               request.form["end_date"],
-              True,
               (datetime.datetime.now()).strftime("%x")
               ]
 
     db = Lib.get_db_connection()
     with db:
         db.execute(
-            f"INSERT INTO Bookings (user_id, desk_id, start_date, end_date, active, created) VALUES ( ?, ?, ?, ?, ?, ?)",
+            f"INSERT INTO Bookings (user_id, desk_id, start_date, end_date, created) VALUES ( ?, ?, ?, ?, ?)",
             values
         )
     db.close()

@@ -52,7 +52,6 @@ class Lib():
                     desk_id INTEGER,
                     start_date TEXT,
                     end_date TEXT,
-                    active BOOL,
                     created DATETIME,
                     FOREIGN KEY (user_id) REFERENCES Users(user_id),
                     FOREIGN KEY (desk_id) REFERENCES Desks(desk_id))
