@@ -76,12 +76,16 @@ def show_desks():
 
 @app.route("/add_desks", methods=["POST", "GET"])
 def add_desks():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     if request.method == "GET":
         return render_template("add_desks.html")
     
     errors = validators.validate_desk_data(request.form["name"], request.form["location"], request.form["floor"])
     if errors:
-        return render_template("add_desks.html", error=errors)
+        return render_template("add_desks.html", errors=errors)
 
     db = Lib.get_db_connection()
     with db:
@@ -99,6 +103,10 @@ def add_desks():
 
 @app.route("/del_desks", methods=["POST", "GET"])
 def del_desks():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     if request.method == "GET":
         return render_template("del_desks.html")
 
@@ -134,6 +142,10 @@ def show_bookings():
 
 @app.route("/make_booking", methods=["POST", "GET"])
 def make_booking():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     if request.method == "GET":
         return render_template("make_booking.html")
 
@@ -145,7 +157,7 @@ def make_booking():
               ]
     errors = validators.validate_booking_data(request.form["desk_name"], request.form["start_date"], request.form["end_date"])
     if errors:
-        return render_template("make_booking.html", error=errors)
+        return render_template("make_booking.html", errors=errors)
 
     db = Lib.get_db_connection()
     with db:
@@ -159,6 +171,10 @@ def make_booking():
 
 @app.route("/del_booking", methods=["POST", "GET"])
 def del_booking():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     if request.method == "GET":
         return render_template("del_booking.html")
 
@@ -180,6 +196,10 @@ def del_booking():
 
 @app.route("/add_user", methods=["POST", "GET"])
 def add_user():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     if request.method == "GET":
         return render_template("add_user.html")
 
@@ -193,7 +213,7 @@ def add_user():
 
     errors = validators.validate_users_data(request.form["username"], request.form["password"], request.form["f_name"], request.form["s_name"], request.form["email"])
     if errors:
-        return render_template("add_user.html", error=errors)
+        return render_template("add_user.html", errors=errors)
 
     db = Lib.get_db_connection()
     with db:
@@ -207,6 +227,10 @@ def add_user():
 
 @app.route("/del_user", methods=["POST", "GET"])
 def del_user():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
     if request.method == "GET":
         return render_template("del_user.html")
 
