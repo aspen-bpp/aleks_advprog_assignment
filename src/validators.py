@@ -1,4 +1,4 @@
-from libs import Lib
+from src.libs import Lib
 from datetime import datetime
 
 def validate_desk_data(name, location, floor):
@@ -7,6 +7,7 @@ def validate_desk_data(name, location, floor):
     '''
     errors = []
     # Name valiation
+    # Format + existence checks
     if not is_required(name):
         errors.append("Desk name is required")
 
@@ -19,16 +20,17 @@ def validate_desk_data(name, location, floor):
     # floor validation
     if not is_required(floor):
         errors.append("Desk floor is required")
-
-    if not is_positive_int(floor):
+    elif not is_positive_int(floor):
         errors.append("Floor must be a positive integer")
     
-    if not desk_already_exists(name, location, floor):
-        errors.append("Desk already logged in the system")
-
-
     if errors:
         return errors
+    
+    # Logical checks only ran after Format + existence checks
+    if not is_new_desk(name, location, floor):
+        errors.append("Desk already logged in the system")
+
+    return errors
     
 
 def validate_users_data(username, password, f_name, s_name, email):
@@ -36,7 +38,7 @@ def validate_users_data(username, password, f_name, s_name, email):
     Validating user input for adding to the user table
     '''
     errors = []
-
+    # Format + existence checks
     # Username validation
     if not is_required(username):
         errors.append("Username is required")
@@ -56,52 +58,52 @@ def validate_users_data(username, password, f_name, s_name, email):
     # email validation
     if not is_required(email):
         errors.append("Email is required")
-
-    if not is_valid_email(email):
+    elif not is_valid_email(email):
         errors.append("Email must contain @ symbol")
-
-    if not user_exists(username, f_name, s_name, email):
-        errors.append("User with those credentials already exists")
-
+    
     if errors:
         return errors
+    # Logical checks ran after Format + existence checks
+    if not is_new_user(username, f_name, s_name, email):
+        errors.append("User with those credentials already exists")
+
+    return errors
 
 def validate_booking_data(desk, start_date, end_date):
     '''
     Validating user input for adding a booking 
     '''
     errors = []
-
+    # Format and existence checks 
     # Desk validation
     if not is_required(desk):
         errors.append("Desk name is required")
-
-    if not desk_exists(desk):
+    elif not desk_exists(desk):
         errors.append(f"Desk {desk} does not exist")
 
     # start_date validation
     if not is_required(start_date):
         errors.append("Booking start date is required")
-    
-    if not is_valid_date(start_date):
+    elif not is_valid_date(start_date):
         errors.append(f"{start_date} is not a valid date")
 
     # end_date validation
     if not is_required(end_date):
         errors.append("Booking end date is required")
-
-    if not is_valid_date(end_date):
+    elif not is_valid_date(end_date):
         errors.append(f"{end_date} is not a valid date")
+    
+    if errors:
+        return errors
 
+    # Logical checks only ran after format and existence checks
     if not end_date_before_start_date(end_date, start_date):
         errors.append("End date cannot be before start date")
 
-    # Is desk already booked on those days
     if not is_desk_available(desk, start_date, end_date):
         errors.append(f"Desk {desk} is already booked in that period")
 
-    if errors:
-        return errors
+    return errors
 
 def is_desk_available(desk, start_date, end_date):
     '''
@@ -137,10 +139,10 @@ def desk_exists(desk):
         return True
 
 def is_required(value):
-    return value is not None and value.strip() != ""
+    return value is not None and str(value).strip() != ""
 
 def is_positive_int(value):
-    return value.isdigit() and int(value) > 0
+    return str(value).isdigit() and int(value) > 0
 
 def is_valid_email(value):
     return isinstance(value, str) and '@' in value
@@ -165,7 +167,7 @@ def end_date_before_start_date(end_date, start_date):
     end = datetime.strptime(end_date, "%Y-%m-%d")
     return end >= start
 
-def desk_already_exists(name, location, floor):
+def is_new_desk(name, location, floor):
     db = Lib.get_db_connection()
 
     desk = db.execute(
@@ -183,7 +185,7 @@ def desk_already_exists(name, location, floor):
     else:
         return True
 
-def user_exists(username, f_name, s_name, email):
+def is_new_user(username, f_name, s_name, email):
     db = Lib.get_db_connection()
 
     user = db.execute(
