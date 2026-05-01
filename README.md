@@ -81,6 +81,9 @@ Errors are displayed to the user through the UI.
 
 1. Pull the repository to your local machine
 2. pip install the requirements.txt file
+```bash
+pip install -r requirements.txt
+```
 3. Setup any initial data using the yaml files in the Data directory, this could be user accounts, or desks
 4. Run main.py from your terminal and paste the IP address output to your terminal window
 5. Log in and enjoy :blush:
@@ -109,7 +112,6 @@ python -m coverage html
 
 - Passwords are stored in plain text (no hashing implemented)
 - No role-based access control (all users have same permissions)
-- No pagination or filtering for large datasets
 - SQLite used instead of a scalable database
 
 ---
