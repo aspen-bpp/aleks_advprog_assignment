@@ -57,6 +57,7 @@ class Lib():
                     FOREIGN KEY (desk_id) REFERENCES Desks(desk_id))
                     """
                 )
+        db.close()
     @classmethod
     def init_db_values(self, db, path, table_name, columns):
         '''

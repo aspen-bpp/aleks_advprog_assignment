@@ -35,11 +35,13 @@ def login():
     password = request.form["password"]
 
     db = Lib.get_db_connection()
-    user = db.execute(
-        "SELECT * FROM Users WHERE username = ?",
-        (username,)
-    ).fetchone()
-    db.close()
+    try:
+        user = db.execute(
+            "SELECT * FROM Users WHERE username = ?",
+            (username,)
+        ).fetchone()
+    finally:
+        db.close()
 
     if user is None or user["password"] != password:
         return render_template("login.html", error="Invalid username or password")
@@ -64,10 +66,12 @@ def show_desks():
     Presents all desks in a table
     '''
     db = Lib.get_db_connection()
-    rows = db.execute(
-        "SELECT * FROM Desks"
-    ).fetchall()
-    db.close()
+    try:
+        rows = db.execute(
+            "SELECT * FROM Desks"
+        ).fetchall()
+    finally:
+        db.close()
 
     desks = [dict(row) for row in rows]
 
@@ -88,15 +92,17 @@ def add_desks():
         return render_template("add_desks.html", errors=errors)
 
     db = Lib.get_db_connection()
-    with db:
-        db.execute(
-            "INSERT INTO Desks (name, location, floor) VALUES ( ?, ?, ?)",
-            [request.form["name"],
-             request.form["location"],
-             request.form["floor"],
-             ]
-            )
-    db.close()
+    try:
+        with db:
+            db.execute(
+                "INSERT INTO Desks (name, location, floor) VALUES ( ?, ?, ?)",
+                [request.form["name"],
+                request.form["location"],
+                request.form["floor"],
+                ]
+                )
+    finally:
+        db.close()
 
     return redirect(url_for("dashboard"))
     
@@ -111,15 +117,17 @@ def del_desks():
         return render_template("del_desks.html")
 
     db = Lib.get_db_connection()
-    with db:
-        db.execute(
-            "DELETE FROM Desks WHERE name = ? AND location = ? AND floor = ?",
-            [request.form["name"],
-             request.form["location"],
-             request.form["floor"],
-             ]
-            )
-    db.close()
+    try:
+        with db:
+            db.execute(
+                "DELETE FROM Desks WHERE name = ? AND location = ? AND floor = ?",
+                [request.form["name"],
+                request.form["location"],
+                request.form["floor"],
+                ]
+                )
+    finally:
+        db.close()
 
     return redirect(url_for("dashboard"))
 
@@ -129,11 +137,13 @@ def show_bookings():
         return redirect(url_for("login"))
     
     db = Lib.get_db_connection()
-    rows = db.execute(
-        "SELECT * FROM Bookings WHERE user_id = ?",
-        (session["user_id"],)
-    ).fetchall()
-    db.close()
+    try:
+        rows = db.execute(
+            "SELECT * FROM Bookings WHERE user_id = ?",
+            (session["user_id"],)
+        ).fetchall()
+    finally:
+        db.close()
 
     bookings = [dict(row) for row in rows]
 
@@ -160,12 +170,14 @@ def make_booking():
         return render_template("make_booking.html", errors=errors)
 
     db = Lib.get_db_connection()
-    with db:
-        db.execute(
-            f"INSERT INTO Bookings (user_id, desk_id, start_date, end_date, created) VALUES ( ?, ?, ?, ?, ?)",
-            values
-        )
-    db.close()
+    try:
+        with db:
+            db.execute(
+                f"INSERT INTO Bookings (user_id, desk_id, start_date, end_date, created) VALUES ( ?, ?, ?, ?, ?)",
+                values
+            )
+    finally:
+        db.close()
 
     return redirect(url_for("show_bookings"))
 
@@ -185,12 +197,14 @@ def del_booking():
         request.form["start_date"],
         request.form["end_date"]
     ]
-    with db:
-        db.execute(
-            "DELETE FROM Bookings WHERE user_id = ? AND desk_id = ? AND start_date = ? AND end_date = ?",
-            values
-            )
-    db.close()
+    try:
+        with db:
+            db.execute(
+                "DELETE FROM Bookings WHERE user_id = ? AND desk_id = ? AND start_date = ? AND end_date = ?",
+                values
+                )
+    finally:
+        db.close()
 
     return redirect(url_for("show_bookings"))
 
@@ -216,12 +230,14 @@ def add_user():
         return render_template("add_user.html", errors=errors)
 
     db = Lib.get_db_connection()
-    with db:
-        db.execute(
-            f"INSERT INTO Users (username, password, f_name, s_name, email) VALUES ( ?, ?, ?, ?, ?)",
-            values
-        )
-    db.close()
+    try:
+        with db:
+            db.execute(
+                f"INSERT INTO Users (username, password, f_name, s_name, email) VALUES ( ?, ?, ?, ?, ?)",
+                values
+            )
+    finally:
+        db.close()
 
     return redirect(url_for("dashboard"))
 
@@ -235,12 +251,14 @@ def del_user():
         return render_template("del_user.html")
 
     db = Lib.get_db_connection()
-    with db:
-        db.execute(
-            "DELETE FROM Users WHERE username = ?",
-            [request.form["username"]]
-            )
-    db.close()
+    try:
+        with db:
+            db.execute(
+                "DELETE FROM Users WHERE username = ?",
+                [request.form["username"]]
+                )
+    finally:
+        db.close()
 
     return redirect(url_for("dashboard"))
 
