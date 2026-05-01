@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, redirect, url_for, render_template, session
 from pathlib import Path
-from libs import Lib
-import validators
+from src.libs import Lib
+import src.validators
 import sqlite3
 import yaml
 import os
