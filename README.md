@@ -1,2 +1,6 @@
 # aleks_advprog_assignment
-A repository for my advanced programming module assignment. This will be a web app that allows users to book desks
+---
+# App Purpose :thinking:
+This is a flask application with an SQLite database, that allows users to book desks for their work day.
+
+It uses 3 main tables: Desks, Users, and Bookings which users can add and delete entries using the online webapp 
