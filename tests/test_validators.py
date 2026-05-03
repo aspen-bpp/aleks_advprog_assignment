@@ -1,11 +1,24 @@
 import unittest
+import os
 from src.libs import Lib
 from src import validators
 
-Lib.init_db()
-Lib.init_all_data()
+TEST_DB = "test_booking.db"
 
 class TestValidators(unittest.TestCase):
+
+    def setUp(self):
+        Lib.DB_NAME = TEST_DB
+
+        if os.path.exists(TEST_DB):
+            os.remove(TEST_DB)
+        
+        Lib.init_db()
+        Lib.init_all_data()
+
+    def tearDown(self):
+        if os.path.exists(TEST_DB):
+            os.remove(TEST_DB)
 
     # Desk validation
 
