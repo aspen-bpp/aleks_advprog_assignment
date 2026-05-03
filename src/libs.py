@@ -5,12 +5,13 @@ import yaml
 import os
 
 class Lib():
+    DB_NAME = "bookings.db"
     @classmethod
-    def get_db_connection(self):
+    def get_db_connection(cls):
         '''
         This is a method that connects to the database and returns the connection
         '''
-        conn = sqlite3.connect("bookings.db")
+        conn = sqlite3.connect(cls.DB_NAME)
         conn.row_factory = sqlite3.Row
 
         return conn
