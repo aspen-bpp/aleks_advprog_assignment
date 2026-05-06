@@ -32,7 +32,7 @@ def login():
         return render_template("login.html")
 
     username = request.form["username"]
-    password = request.form["password"]
+    password = Lib.hash_password(request.form["password"])
 
     db = Lib.get_db_connection()
     try:
@@ -245,7 +245,7 @@ def add_user():
 
     values = [
         request.form["username"],
-        request.form["password"],
+        Lib.hash_password(request.form["password"]),
         request.form["f_name"],
         request.form["s_name"],
         request.form["email"]

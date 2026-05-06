@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from pathlib import Path
+import hashlib
 import sqlite3
 import yaml
 import os
@@ -72,9 +73,13 @@ class Lib():
             col_names = ", ".join(columns)
 
             values = [
-                tuple(entry[col] for col in columns)
+                tuple(
+                    self.hash_password(entry[col]) if col == "password" else entry[col]
+                    for col in columns
+                )
                 for entry in data
             ]
+
             db.executemany(
                 f"INSERT INTO {table_name} ({col_names}) VALUES ({placeholders})",
                 values
@@ -118,3 +123,14 @@ class Lib():
             return None
         
         return booking["desk_id"]
+    
+    @classmethod
+    def hash_password(self, password):
+        '''
+        Takes an inputted password and returns hashed version
+        '''
+        hash_object = hashlib.sha256()
+
+        hash_object.update(password.encode('utf-8'))
+
+        return hash_object.hexdigest()
