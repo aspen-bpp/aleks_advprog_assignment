@@ -85,8 +85,12 @@ Errors are displayed to the user through the UI.
 pip install -r requirements.txt
 ```
 3. Setup any initial data using the yaml files in the Data directory, this could be user accounts, or desks
-4. Run main.py from your terminal and paste the IP address output to your terminal window
-5. Log in and enjoy :blush:
+4. Navigate to the top of the directory and run
+```bash
+python -m src.main 
+```
+5. Either paste url into browser or, ctrl + left click on the address in the terminal
+6. Log in and enjoy :blush:
 
 ---
 
