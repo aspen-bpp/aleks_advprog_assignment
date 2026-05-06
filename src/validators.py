@@ -6,7 +6,7 @@ def validate_desk_data(name, location, floor):
     Validating user input for adding to the desk table
     '''
     errors = []
-    # Name valiation
+    # Name validation
     # Format + existence checks
     if not is_required(name):
         errors.append("Desk name is required")

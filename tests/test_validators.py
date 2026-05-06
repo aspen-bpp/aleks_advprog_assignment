@@ -21,12 +21,12 @@ class TestValidators(unittest.TestCase):
             os.remove(TEST_DB)
 
     # Desk validation
-
+    # Expected passing function
     def test_valid_desk_input(self):
         errors = validators.validate_desk_data("F1D999", "Manchester", "3")
         self.assertEqual(errors, [])
 
-    # Empty input tests
+    # Missing data input tests
     def test_empty_desk_name(self):
         errors = validators.validate_desk_data("", "Manchester", "3")
         self.assertIn("Desk name is required", errors)
@@ -39,7 +39,7 @@ class TestValidators(unittest.TestCase):
         errors = validators.validate_desk_data("F1D999", "Manchester", "")
         self.assertIn("Desk floor is required", errors)
 
-    # Invalid inputs
+    # Invalid input tests
     def test_invalid_desk_location(self):
         errors = validators.validate_desk_data("F1D999", "TT", "3")
         self.assertIn("TT is not a valid location", errors)
@@ -58,7 +58,7 @@ class TestValidators(unittest.TestCase):
         self.assertIn("Desk already logged in the system", errors)
 
     # User validation
-
+    # Expected passing function
     def test_valid_user_input(self):
         errors = validators.validate_users_data(
             "TonyFelps",
@@ -69,7 +69,7 @@ class TestValidators(unittest.TestCase):
         )
         self.assertEqual(errors, [])
     
-    # Empty input tests
+    # Missing data input tests
 
     def test_empty_username(self):
         errors = validators.validate_users_data(
@@ -121,6 +121,7 @@ class TestValidators(unittest.TestCase):
         )
         self.assertIn("Email is required", errors)
 
+    # Invalid data entry tests
 
     def test_invalid_email(self):
         errors = validators.validate_users_data(
@@ -143,7 +144,7 @@ class TestValidators(unittest.TestCase):
         self.assertIn("User with those credentials already exists", errors)
 
     # Booking validation
-
+    # Expected passing function
     def test_valid_booking_input(self):
         errors = validators.validate_booking_data(
             "F1D0",
@@ -152,7 +153,7 @@ class TestValidators(unittest.TestCase):
         )
         self.assertEqual(errors, [])
 
-    # Empty input tests
+    # Miissing data input tests
 
     def test_empty_booking_desk(self):
         errors = validators.validate_booking_data(
@@ -178,7 +179,7 @@ class TestValidators(unittest.TestCase):
         )
         self.assertIn("Booking end date is required", errors)
 
-
+    # Invalid data entry tests
     def test_booking_desk_does_not_exist(self):
         errors = validators.validate_booking_data(
             "NOT_A_REAL_DESK",
@@ -235,7 +236,7 @@ class TestValidators(unittest.TestCase):
 
         self.assertIn("Desk F1D0 is already booked in that period", errors)
 
-    # Validation helper functions testing
+    # Testing validation helper functions in isolation
 
     def test_is_required_true(self):
         self.assertTrue(validators.is_required("hello"))

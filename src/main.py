@@ -24,7 +24,7 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     '''
-    Login page,
+    Renders Login page,
     Gets user input through login.html page,
     Navigates user to dashboard screen if credentials are correct
     '''
@@ -53,7 +53,7 @@ def login():
 @app.route("/dashboard")
 def dashboard():
     '''
-    Dashboard page where user selects functionality they wish to use
+    Renders Dashboard page where user selects functionality they wish to use
     '''
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -63,7 +63,7 @@ def dashboard():
 @app.route("/show_desks", methods=["GET"])
 def show_desks():
     '''
-    Presents all desks in a table
+    renders a table of all desks in the databse
     '''
     db = Lib.get_db_connection()
     try:
@@ -80,6 +80,10 @@ def show_desks():
 
 @app.route("/add_desks", methods=["POST", "GET"])
 def add_desks():
+    '''
+    Renders the add desks template
+    Gets user input from the html form and uses this to build an SQL query 
+    '''
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -109,6 +113,10 @@ def add_desks():
 
 @app.route("/del_desks", methods=["POST", "GET"])
 def del_desks():
+    '''
+    renders delete desk template
+    User inputs name, location, and floor and an SQl query to delete the row with those values is run
+    '''
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -133,6 +141,10 @@ def del_desks():
 
 @app.route("/show_bookings", methods=["GET"])
 def show_bookings():
+    '''
+    Renders show bookings template
+    Selects all booking data from Booking table and outputs as a table using Jinja2 template
+    '''
     if "user_id" not in session:
         return redirect(url_for("login"))
     
@@ -152,6 +164,11 @@ def show_bookings():
 
 @app.route("/make_booking", methods=["POST", "GET"])
 def make_booking():
+    '''
+    Renders make booking template
+    User inputs data into the form
+    data for the booking is fetched from th eform and an SQL query is created with the users input
+    '''
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -183,6 +200,11 @@ def make_booking():
 
 @app.route("/del_booking", methods=["POST", "GET"])
 def del_booking():
+    '''
+    Renders the delete booking page,
+    User can only remove bookings made by them
+    values are fetched from the form and used to delete the relevant booking from the table
+    '''
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -210,6 +232,10 @@ def del_booking():
 
 @app.route("/add_user", methods=["POST", "GET"])
 def add_user():
+    '''
+    Renders the add user template
+    User input is collected and used to add a row in the Users table
+    '''
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -243,6 +269,10 @@ def add_user():
 
 @app.route("/del_user", methods=["POST", "GET"])
 def del_user():
+    '''
+    Renders delete booking template
+    User input is fetced and used to remove the relevant row in the Users table
+    '''
 
     if "user_id" not in session:
         return redirect(url_for("login"))
@@ -264,6 +294,10 @@ def del_user():
 
 @app.route("/logout")
 def logout():
+    '''
+    Clears the session so the user no longer has access to other screens
+    redirects user to login screen
+    '''
     session.clear()
     return redirect(url_for("login"))
 

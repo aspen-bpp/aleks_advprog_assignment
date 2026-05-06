@@ -62,7 +62,7 @@ class Lib():
     @classmethod
     def init_db_values(self, db, path, table_name, columns):
         '''
-        This is a method that inputs all the starting data values from a single yaml file
+        This is a method that inputs all the starting data values for a single yaml file
         '''
         existing = db.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
         if existing == 0:
@@ -104,6 +104,9 @@ class Lib():
     
     @classmethod
     def get_desk_id(self, desk_name):
+        '''
+        Selects desk_id from a desk name
+        '''
         db = self.get_db_connection()
         with db:
             booking = db.execute(
